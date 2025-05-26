@@ -2,7 +2,7 @@
   "name": "library-management",
   "version": "1.0.0",
   "description": "Система управления библиотекой на Angular",
-  "author": "",
+  "author": "relaxxx89",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -49,7 +49,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/[username]/library-management.git"
+    "url": "git+https://github.com/relaxxx89/library-management.git"
   },
   "keywords": [
     "angular",
@@ -59,7 +59,7 @@
     "crud"
   ],
   "bugs": {
-    "url": "https://github.com/[username]/library-management/issues"
+    "url": "https://github.com/relaxxx89/library-management/issues"
   },
-  "homepage": "https://github.com/[username]/library-management#readme"
+  "homepage": "https://github.com/relaxxx89/library-management#readme"
 }

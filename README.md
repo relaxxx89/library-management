@@ -23,7 +23,7 @@
 
 1. Клонируйте репозиторий:
 ```bash
-git clone [url-репозитория]
+git clone https://github.com/relaxxx89/library-management.git
 ```
 
 2. Перейдите в директорию проекта:
