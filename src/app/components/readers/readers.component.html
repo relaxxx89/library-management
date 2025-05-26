@@ -1,0 +1,129 @@
+<div class="container">
+  <h2>Управление читателями</h2>
+
+  <div class="loading-overlay" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <form [formGroup]="readerForm" (ngSubmit)="onSubmit()" class="reader-form">
+    <mat-form-field>
+      <mat-label>Имя</mat-label>
+      <input matInput formControlName="firstName" placeholder="Введите имя">
+      <mat-error *ngIf="readerForm.get('firstName')?.errors?.['required']">
+        Имя обязательно
+      </mat-error>
+      <mat-error *ngIf="readerForm.get('firstName')?.errors?.['minlength']">
+        Имя должно содержать минимум 2 символа
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Фамилия</mat-label>
+      <input matInput formControlName="lastName" placeholder="Введите фамилию">
+      <mat-error *ngIf="readerForm.get('lastName')?.errors?.['required']">
+        Фамилия обязательна
+      </mat-error>
+      <mat-error *ngIf="readerForm.get('lastName')?.errors?.['minlength']">
+        Фамилия должна содержать минимум 2 символа
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" placeholder="Введите email">
+      <mat-error *ngIf="readerForm.get('email')?.errors?.['required']">
+        Email обязателен
+      </mat-error>
+      <mat-error *ngIf="readerForm.get('email')?.errors?.['email']">
+        Введите корректный email
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Телефон</mat-label>
+      <input matInput formControlName="phone" placeholder="Введите телефон">
+      <mat-error *ngIf="readerForm.get('phone')?.errors?.['required']">
+        Телефон обязателен
+      </mat-error>
+      <mat-error *ngIf="readerForm.get('phone')?.errors?.['pattern']">
+        Введите корректный номер телефона
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Дата регистрации</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="registrationDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="readerForm.get('registrationDate')?.errors?.['required']">
+        Дата регистрации обязательна
+      </mat-error>
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!readerForm.valid || isLoading">
+        {{ isEditing ? 'Обновить' : 'Добавить' }}
+      </button>
+      <button mat-button type="button" (click)="resetForm()" *ngIf="isEditing" [disabled]="isLoading">
+        Отмена
+      </button>
+    </div>
+  </form>
+
+  <table mat-table [dataSource]="readers" class="readers-table" [trackBy]="trackByReaderId" matSort (matSortChange)="sortData($event)">
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Имя</th>
+      <td mat-cell *matCellDef="let reader">{{reader.firstName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Фамилия</th>
+      <td mat-cell *matCellDef="let reader">{{reader.lastName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+      <td mat-cell *matCellDef="let reader">{{reader.email}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Телефон</th>
+      <td mat-cell *matCellDef="let reader">{{reader.phone}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="registrationDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Дата регистрации</th>
+      <td mat-cell *matCellDef="let reader">{{reader.registrationDate | date}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="active">
+      <th mat-header-cell *matHeaderCellDef>Активен</th>
+      <td mat-cell *matCellDef="let reader">
+        <mat-icon [class.available]="reader.active" [class.unavailable]="!reader.active">
+          {{reader.active ? 'check_circle' : 'cancel'}}
+        </mat-icon>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Действия</th>
+      <td mat-cell *matCellDef="let reader">
+        <button mat-icon-button color="primary" (click)="editReader(reader)" [disabled]="isLoading"
+                matTooltip="Редактировать">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteReader(reader.id!)" [disabled]="isLoading"
+                matTooltip="Удалить">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="7">Нет данных</td>
+    </tr>
+  </table>
+</div>

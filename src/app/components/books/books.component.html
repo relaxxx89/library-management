@@ -1,0 +1,127 @@
+<div class="container">
+  <h2>Управление книгами</h2>
+
+  <div class="loading-overlay" *ngIf="isLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="book-form">
+    <mat-form-field>
+      <mat-label>Название</mat-label>
+      <input matInput formControlName="title" placeholder="Введите название книги">
+      <mat-error *ngIf="bookForm.get('title')?.errors?.['required']">
+        Название обязательно
+      </mat-error>
+      <mat-error *ngIf="bookForm.get('title')?.errors?.['minlength']">
+        Название должно содержать минимум 2 символа
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Автор</mat-label>
+      <input matInput formControlName="author" placeholder="Введите автора">
+      <mat-error *ngIf="bookForm.get('author')?.errors?.['required']">
+        Автор обязателен
+      </mat-error>
+      <mat-error *ngIf="bookForm.get('author')?.errors?.['minlength']">
+        Имя автора должно содержать минимум 2 символа
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Год издания</mat-label>
+      <input matInput type="number" formControlName="year" placeholder="Введите год издания">
+      <mat-error *ngIf="bookForm.get('year')?.errors?.['required']">
+        Год обязателен
+      </mat-error>
+      <mat-error *ngIf="bookForm.get('year')?.errors?.['min'] || bookForm.get('year')?.errors?.['max']">
+        Год должен быть между 1000 и текущим годом
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Жанр</mat-label>
+      <input matInput formControlName="genre" placeholder="Введите жанр">
+      <mat-error *ngIf="bookForm.get('genre')?.errors?.['required']">
+        Жанр обязателен
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>ISBN</mat-label>
+      <input matInput formControlName="isbn" placeholder="Введите ISBN">
+      <mat-error *ngIf="bookForm.get('isbn')?.errors?.['required']">
+        ISBN обязателен
+      </mat-error>
+      <mat-error *ngIf="bookForm.get('isbn')?.errors?.['pattern']">
+        Неверный формат ISBN
+      </mat-error>
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!bookForm.valid || isLoading">
+        {{ isEditing ? 'Обновить' : 'Добавить' }}
+      </button>
+      <button mat-button type="button" (click)="resetForm()" *ngIf="isEditing" [disabled]="isLoading">
+        Отмена
+      </button>
+    </div>
+  </form>
+
+  <table mat-table [dataSource]="books" class="books-table" [trackBy]="trackByBookId" matSort (matSortChange)="sortData($event)">
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Название</th>
+      <td mat-cell *matCellDef="let book">{{book.title}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="author">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Автор</th>
+      <td mat-cell *matCellDef="let book">{{book.author}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="year">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Год</th>
+      <td mat-cell *matCellDef="let book">{{book.year}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="genre">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Жанр</th>
+      <td mat-cell *matCellDef="let book">{{book.genre}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="isbn">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ISBN</th>
+      <td mat-cell *matCellDef="let book">{{book.isbn}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="available">
+      <th mat-header-cell *matHeaderCellDef>Доступна</th>
+      <td mat-cell *matCellDef="let book">
+        <mat-icon [class.available]="book.available" [class.unavailable]="!book.available">
+          {{book.available ? 'check_circle' : 'cancel'}}
+        </mat-icon>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Действия</th>
+      <td mat-cell *matCellDef="let book">
+        <button mat-icon-button color="primary" (click)="editBook(book)" [disabled]="isLoading"
+                matTooltip="Редактировать">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteBook(book.id!)" [disabled]="isLoading"
+                matTooltip="Удалить">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="7">Нет данных</td>
+    </tr>
+  </table>
+</div>

@@ -1,0 +1,11 @@
+<div class="app-container">
+  <mat-toolbar color="primary">
+    <span>{{ title }}</span>
+    <nav>
+      <a mat-button routerLink="/books" routerLinkActive="active">Книги</a>
+      <a mat-button routerLink="/readers" routerLinkActive="active">Читатели</a>
+    </nav>
+  </mat-toolbar>
+
+  <router-outlet></router-outlet>
+</div>
